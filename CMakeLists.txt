@@ -53,9 +53,6 @@ message(STATUS "h5bench MACSIO: ${H5BENCH_MACSIO}")
 # HDF5 Dependency #############################################################
 #
 
-set(HDF5_HOME $ENV{HDF5_HOME})
-set(CMAKE_PREFIX_PATH ${HDF5_HOME})
-
 find_package(HDF5 REQUIRED)
 
 message(STATUS "Using HDF5 version: ${HDF5_VERSION}")
@@ -211,7 +208,7 @@ endif()
 if(H5BENCH_E3SM)
     ExternalProject_Add(h5bench_e3sm
         SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/e3sm
-        CONFIGURE_COMMAND autoreconf -i COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/e3sm/configure --prefix=${CMAKE_BINARY_DIR} --with-hdf5=${HDF5_HOME}
+        CONFIGURE_COMMAND autoreconf -i COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/e3sm/configure --prefix=${CMAKE_BINARY_DIR} 
         BUILD_COMMAND make
         INSTALL_COMMAND ${CMAKE_COMMAND} -E copy src/e3sm_io ${CMAKE_BINARY_DIR}/h5bench_e3sm 
         BUILD_IN_SOURCE 1
@@ -268,10 +265,6 @@ if(H5BENCH_MACSIO)
     set(BUILD_DOCS OFF)
     set(ENABLE_SILO_PLUGIN OFF)
     set(ENABLE_HDF5_PLUGIN ON)
-    set(WITH_HDF5_PREFIX ${HDF5_HOME})
-
-    set(JSON_HOME $ENV{JSON_HOME})
-    set(CMAKE_PREFIX_PATH ${HDF5_HOME};${JSON_HOME})
 
     ExternalProject_Add(h5bench_macsio
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/macsio
@@ -279,8 +272,6 @@ if(H5BENCH_MACSIO)
             -DBUILD_DOCS=OFF
             -DENABLE_SILO_PLUGIN=OFF
             -DENABLE_HDF5_PLUGIN=ON
-            -DWITH_HDF5_PREFIX=${HDF5_HOME}
-            -DWITH_JSON-CWX_PREFIX=${JSON_HOME}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}
         BUILD_COMMAND make
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/h5bench_macsio-prefix/src/h5bench_macsio-build/macsio/macsio ${CMAKE_CURRENT_BINARY_DIR}/h5bench_macsio
